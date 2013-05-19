@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<meta http-equiv="content-type" content ="text/html; charset=gb2312">
+    
+<head>
+<script type="text/javascript" src="scratchpad.js"></script>
+<script type="text/javascript">
+    function subClear(){
+        clear();
+        document.getElementById("evolute").disabled = true;
+    }
+    
+    function subStart() {
+        start();
+        document.getElementById("evolute").disabled = false;
+    }
+</script>
+</head>
+    
+<body>
+    <input type="button" id="start" value="Start" onclick="subStart()">
+    <input type="button" id="evolute" value="Evolute" onclick="evolute()" disabled>
+    <input type="button" id="clear" value="Clear" onclick="subClear()">
+</body>
+</html>
