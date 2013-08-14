@@ -1,5 +1,5 @@
 var protoCell={row:0,col:0,status:1,next:0};
-protoCell.render= function(){
+protoCell.render = function(){
     if (this.status == 0) {
         document.getElementById(this.row + "_" + this.col).style.backgroundColor="#CCC";
     } else if (this.status == 1) {
@@ -57,12 +57,12 @@ protoCell.tryLive = function(count) {
     }
 }
 
-function Cell( r,   c,  s) {
+function Cell( r,  c,  s) {
     this.__proto__ = protoCell;
     this.row = r;
     this.col = c;
     this.status = s;
-    this.next =0;
+    this.next = 0;
 }
 
 var protoWorld = {world:0, rowCount:4, columnCount:8};
