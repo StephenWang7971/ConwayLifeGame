@@ -1,5 +1,11 @@
-var protoCell={row:0,col:0,status:1,next:0};
-protoCell.render = function(){
+function Cell( r,  c,  s) {
+    this.row = r;
+    this.col = c;
+    this.status = s;
+    this.next = 0;
+}
+
+Cell.prototype.render = function(){
     if (this.status == 0) {
         document.getElementById(this.row + "_" + this.col).style.backgroundColor="#CCC";
     } else if (this.status == 1) {
@@ -7,23 +13,23 @@ protoCell.render = function(){
     }
 }
 
-protoCell.isThis = function(r, c) {
+Cell.prototype.isThis = function(r, c) {
     return this.row == r && this.col == c;
 }
 
-protoCell.reverse = function() {
+Cell.prototype.reverse = function() {
     this.status = 1 - this.status;
 }
 
-protoCell.setStatus = function (s) {
+Cell.prototype.setStatus = function (s) {
     this.status = s;
 }
 
-protoCell.getStatus = function() {
+Cell.prototype.getStatus = function() {
     return this.status;
 }
 
-protoCell.prepareEvolution = function(count) {
+Cell.prototype.prepareEvolution = function(count) {
     switch (this.status) {
     case 0:
         this.tryBorn(count);
@@ -36,12 +42,12 @@ protoCell.prepareEvolution = function(count) {
     }
 }
 
-protoCell.evolute = function() {
+Cell.prototype.evolute = function() {
     this.status = this.next;
     this.next = 0;
 }
 
-protoCell.tryBorn = function(count) {
+Cell.prototype.tryBorn = function(count) {
     if (count == 3) {
         this.next = 1;
     } else {
@@ -49,7 +55,7 @@ protoCell.tryBorn = function(count) {
     }
 }
 
-protoCell.tryLive = function(count) {
+Cell.prototype.tryLive = function(count) {
     if (count < 2 || count > 3) {
         this.next = 0;
     } else {
@@ -57,33 +63,31 @@ protoCell.tryLive = function(count) {
     }
 }
 
-function Cell( r,  c,  s) {
-    this.__proto__ = protoCell;
-    this.row = r;
-    this.col = c;
-    this.status = s;
-    this.next = 0;
+
+function World() {
+	this.rowCount = 8;
+	this.columnCount = 8;
+    this.world = new Array();
 }
 
-var protoWorld = {world:0, rowCount:4, columnCount:8};
-protoWorld.isOutOfRange = function( r,  c) {
+World.prototype.isOutOfRange = function( r,  c) {
     return r < 0 || r >= this.rowCount || c < 0 || c >= this.columnCount;
 }
 
-protoWorld.getCellStatus = function(row, col, status) {
+World.prototype.getCellStatus = function(row, col, status) {
     return this.world[this.getPos(row, col)].getStatus();
 }
 
-protoWorld.setCellStatus = function(row, col, status) {
+World.prototype.setCellStatus = function(row, col, status) {
     this.world[this.getPos(row, col)].setStatus(status);
 }
 
     
-protoWorld.getPos = function(row,  col) {
+World.prototype.getPos = function(row,  col) {
     return row * this.columnCount + col;
 }
     
-protoWorld.countLivingNeighbor = function( cell) {
+World.prototype.countLivingNeighbor = function( cell) {
     var count = 0;
     for (var row = cell.row - 1;  row <= cell.row + 1; row++) {
         for (var col = cell.col - 1; col <= cell.col + 1; col++) {
@@ -95,18 +99,18 @@ protoWorld.countLivingNeighbor = function( cell) {
     return count;
 }
 
-protoWorld.getCell = function(row, col) {
+World.prototype.getCell = function(row, col) {
     return this.world[this.getPos(row, col)];
 }
 
-protoWorld.reverse = function(row, col) {
+World.prototype.reverse = function(row, col) {
     if(reversable) {
         this.getCell(row, col).reverse();
         this.getCell(row, col).render();
     }
 }
 
-protoWorld.clear = function () {
+World.prototype.clear = function () {
     for (var row = 0; row < this.rowCount; row ++) {
         for (var col = 0; col < this.columnCount; col ++) {
             this.getCell(row, col).setStatus(0);
@@ -114,11 +118,8 @@ protoWorld.clear = function () {
     }
 }
 
-function World() {
-    this.__proto__ = protoWorld;
-    this.world = new Array();
-    
-    this.init = function() {
+
+World.prototype.init = function() {
         for (var row = 0; row < this.rowCount; row++) {
             for (var col = 0; col < this.columnCount; col++) {
                 this.world[this.getPos(row,col)] = new Cell(row, col, 0);
@@ -126,7 +127,7 @@ function World() {
         }
     }
     
-    this.fillPage = function () {
+World.prototype.fillPage = function () {
         var table = "";
         table += "<table>";
         for (var row = 0; row < this.rowCount; row++) {
@@ -141,7 +142,7 @@ function World() {
         document.write(table);
     }
     
-    this.evolute = function () {
+ World.prototype.evolute = function () {
         for (var row = 0; row < this.rowCount; row ++) {
             for (var col = 0; col < this.columnCount; col++) {
                  var cell = this.world[this.getPos(row, col)];
@@ -157,19 +158,15 @@ function World() {
         }
     }
     
-    this.render = function() {
+   World.prototype.render = function() {
         for (var row =0; row < this.rowCount; row++) {
             for (var col =0 ; col < this.columnCount; col++) {
                 this.world[this.getPos(row, col)].render();
             }
         }
     }
-}
 
-var assertProto = {};
-function Assert() { 
-    this.__proto__ = assertProto;
-    
+function Assert() {     
     this.areEqual = function(expected, actual, msg) {
         if (expected != actual) {
             alert("Failed! Expected is " + expected +", but got " + actual + "\n" + msg);
